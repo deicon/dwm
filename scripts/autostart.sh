@@ -27,16 +27,16 @@ pkg() {
    echo -e "Pkgs: ✔ $pkginst | ↺ $pkgupd "
 }
 
-cpu() {
-   read cpu nice system idle iowait rest < /proc/stat
-   prev=$((nice+system+previdle+iowait))
-   sleep 0.5
-   read cpu nice system previdle iowait rest < /proc/stat
-   total=$((nice+system+idle+iowait))
-   cpu=$((100*( (total-prev) - (idle-previdle) ) / (total - prev)))
-   echo -e "☁ $cpu CPU"
-   
+cpu(){
+  read cpu a b c previdle rest < /proc/stat
+  prevtotal=$((a+b+c+previdle))
+  sleep 0.5
+  read cpu a b c idle rest < /proc/stat
+  total=$((a+b+c+idle))
+  cpu=$((100*( (total-prevtotal) - (idle-previdle) ) / (total-prevtotal) ))
+  echo -e "💻 $cpu% cpu"
 }
+
 
 while (true); do
    xsetroot -name "$(cpu) | $(pkg) | $(mem) | $(date)"
